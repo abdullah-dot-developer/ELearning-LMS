@@ -4,7 +4,7 @@
   "main": "build/server.js",
   "type": "commonjs",
   "engines": {
-    "node": ">=20.0.0"
+    "node": "22.x"
   },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only server.ts",
