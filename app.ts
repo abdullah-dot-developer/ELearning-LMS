@@ -40,6 +40,10 @@ app.use("/api/v1", notificationRoutes);
 app.use("/api/v1", analyticsRoutes);
 app.use("/api/v1", layoutRoutes);
 
+app.use("/test", (req, res) => {
+  res.send("Api is working fine");
+});
+
 //unknown route
 app.all("*", (req, res, next) => {
   const err = new Error(`Route ${req.originalUrl} not found!`) as any;
