@@ -3,14 +3,9 @@
   "version": "1.0.0",
   "main": "build/server.js",
   "type": "commonjs",
-  "engines": {
-    "node": "22.x",
-    "npm": "10.9.0"
-  },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only server.ts",
     "start": "node build/server.js",
-    "heroku-postbuild": "npm install --production=false && npm run build",
     "build": "tsc"
   },
   "author": "Abdullah-Abbasi",
