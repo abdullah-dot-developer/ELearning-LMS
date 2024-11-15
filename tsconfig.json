@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+      "module": "CommonJS",
+      // "moduleResolution": "NodeNext", // Add or ensure this line is present
+      "target": "ES2020", // or whichever version of ECMAScript you're targeting
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "rootDir": "../server",
+      "outDir": "./build"
+    }
+  }
