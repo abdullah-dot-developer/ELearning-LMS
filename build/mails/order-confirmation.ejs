@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            text-align: center;
+            background-color: #4caf50;
+            color: white;
+            padding: 20px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .content h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #4caf50;
+        }
+
+        .order-details {
+            background-color: #fafafa;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .order-details h3 {
+            margin: 0;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .order-details p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            color: #888;
+        }
+
+        .footer a {
+            color: #4caf50;
+            text-decoration: none;
+        }
+
+        .footer p {
+            margin: 0;
+        }
+
+        .button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .content h2 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Order Confirmation</h1>
+        </div>
+
+        <div class="content">
+            <h2>Thank you for your purchase, <%= order.username %>!</h2>
+            <p>We're excited to have you onboard for our course "<%= order.name%>". Your order has been
+                    successfully processed. Below are the details:</p>
+
+            <div class="order-details">
+                <h3>Order Details</h3>
+                <p><strong>Order ID:</strong>
+                    <%= order._id %>
+                </p>
+                <p><strong>Course Name:</strong>
+                    <%= order.name %>
+                </p>
+                <p><strong>Price:</strong> $<%= order.price %>
+                </p>
+                <p><strong>Order Date:</strong>
+                    <%= order.date %>
+                </p>
+            </div>
+
+            <p>You can access your course immediately using your account Login. We hope you enjoy the learning
+                experience!</p>
+
+            <!-- <a href="" class="button">Access Your Course</a> -->
+
+        </div>
+
+        <div class="footer">
+            <p>If you have any questions, feel free to <a href="mailto:a22795101@gmail.com">contact us</a>.</p>
+            <p>&copy; <%= new Date().getFullYear() %> ELearning LMS. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>
