@@ -1,4 +1,3 @@
-import exp from "constants";
 import dotenv from "dotenv";
 import Redis from "ioredis";
 dotenv.config();
