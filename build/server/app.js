@@ -21,7 +21,7 @@ exports.app = (0, express_1.default)();
 exports.app.use(express_1.default.json({ limit: "50mb" }));
 exports.app.use((0, cookie_parser_1.default)());
 exports.app.use((0, cors_1.default)({
-    origin: "http://localhost:3000",
+    origin: "https://e-learning-lms-frontend.vercel.app/",
     credentials: true,
 }));
 // api requests limit
@@ -38,6 +38,9 @@ exports.app.use("/api/v1", order_route_1.default);
 exports.app.use("/api/v1", notification_route_1.default);
 exports.app.use("/api/v1", analytics_route_1.default);
 exports.app.use("/api/v1", layout_route_1.default);
+exports.app.use("/test", (req, res) => {
+    res.send("Api is working fine");
+});
 //unknown route
 exports.app.all("*", (req, res, next) => {
     const err = new Error(`Route ${req.originalUrl} not found!`);
