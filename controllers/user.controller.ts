@@ -170,17 +170,17 @@ export const loginUser = catchAsyncError(
       }
 
       const user = await userModel.findOne({ email });
-      // console.log(user);
+      
       if (!user) {
         return next(
           new ErrorHandler("User with this email doesn't exist!", 400)
         );
       }
-      // console.log(password, user.password);
+      // console.log(password, user.password, 'password');
       // const hashedPassword = await bcrypt.hash(password, 10);
       // console.log(hashedPassword);
 
-      const isPasswordCorrect = await bcrypt.compare(password, user.password);
+      const isPasswordCorrect = await bcrypt.compare(password, user?.password);
 
       // console.log(password, "Bcrypted Password: ", user.password);
       // console.log(isPasswordCorrect);
@@ -204,7 +204,7 @@ export const logoutUser = catchAsyncError(
       res.cookie("refresh_token", "", { maxAge: 1 });
       const userId = req.user?._id as string;
       // console.log(req.user);
-      redis.del(userId);
+      // redis.del(userId);
 
       res.status(200).json({
         success: true,
@@ -237,13 +237,14 @@ export const updateAccessToken = catchAsyncError(
       }
 
       // Retrieve session data from Redis (or any session store)
-      const sessionData = await redis.get(decoded.id as string);
+      // const sessionData = await redis.get(decoded.id as string);
+      const sessionData = await userModel.findById(decoded?.id).select("-password");
       if (!sessionData) {
         return next(new ErrorHandler("No session found. Please log in.", 401));
       }
 
       // Parse session data (assumed to be stored in JSON format)
-      const user = JSON.parse(sessionData);
+      const user = sessionData;
 
       // Create new access token
       const accessToken = jwt.sign(
@@ -266,7 +267,7 @@ export const updateAccessToken = catchAsyncError(
 
       res.cookie("refresh_token", newRefreshToken, refreshTokenOptions);
 
-      redis.set(user._id, JSON.stringify(user), "EX", 604800);
+      // redis.set(user._id, JSON.stringify(user), "EX", 604800);
 
       // Return response
       next();
@@ -280,7 +281,12 @@ export const getUserInfo = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?._id as string;
-      getUserById(userId, res);
+      // getUserById(userId, res);
+      const user = await userModel.findById(userId).select("-password");
+      res.status(200).json({
+        success: true,
+        user,
+      });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
@@ -315,7 +321,6 @@ export const socialAuth = catchAsyncError(
 //UPDATE USER INFORMATION
 interface IUpdateUserInfo {
   name?: string;
-  // email?: string;
 }
 
 export const updateUserInfo = catchAsyncError(
@@ -323,21 +328,20 @@ export const updateUserInfo = catchAsyncError(
     try {
       const { name } = req.body as IUpdateUserInfo;
       const userId = req.user?._id as string;
-      const user = await userModel.findById(userId);
-      // console.log(user);
-
+      const user = await userModel.findById(userId).select("-password");
+      
       if (user && name) {
         user.name = name;
+        await user.save().catch((err) => console.error(err));
       }
-      await user?.save();
-      await redis.set(userId, JSON.stringify(user));
+      // await redis.set(userId, JSON.stringify(user));
 
       res.status(201).json({
         success: true,
         user,
       });
     } catch (error: any) {
-      return next(new ErrorHandler(error.message, 400));
+      return next(new ErrorHandler(error.message, 500));
     }
   }
 );
@@ -377,7 +381,7 @@ export const updatePassword = catchAsyncError(
       user.password = hashedPassword;
       await user.save();
 
-      redis.set(userId, JSON.stringify(user));
+      // redis.set(userId, JSON.stringify(user));
 
       res.status(200).json({
         success: true,
@@ -401,11 +405,12 @@ export const updateProfilePicture = catchAsyncError(
       const userId = req.user?._id as string;
 
       // Find user by ID
-      const user = await userModel.findById(userId);
+      const user = await userModel.findById(userId).select("-password");
 
       if (!user) {
         return next(new ErrorHandler("User not found", 400));
       }
+
 
       // Check if user already has a profile picture
       if (user.avatar && user.avatar.public_id) {
@@ -426,11 +431,12 @@ export const updateProfilePicture = catchAsyncError(
         url: myCloud.secure_url,
       };
 
+      console.log(user?.avatar, 'avatar')
       // Save the updated user information
       await user.save();
 
       // Optionally set in Redis if needed
-      await redis.set(userId, JSON.stringify(user));
+      // await redis.set(userId, JSON.stringify(user));
 
       res.status(200).json({
         success: true,

@@ -32,7 +32,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, "Please Enter Your Name."],
+      required: [true, "Please Enter Your Email."],
       validate: {
         validator: function (value: string) {
           return emailRegexPattern.test(value);
@@ -48,7 +48,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       select: true,
     },
     avatar: {
-      public_id: String,
+      public_id: String,  
       url: String,
     },
     role: {
@@ -70,20 +70,14 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
   }
 );
 
-userSchema.pre<IUser>("save", async function (next) {
-  if (this.isModified("password")) {
-    next();
-  }
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
+// userSchema.pre<IUser>("save", async function (next) {
+//   if (this.isModified("password")) {
+//     next();
+//   }
+//   this.password = await bcrypt.hash(this.password, 10);
+//   next();
+// });
 
-//compare Password
-userSchema.methods.comparePassword = async function (
-  enteredPassword: string
-): Promise<boolean> {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
 
 //access token
 userSchema.methods.SignAccessToken = function () {

@@ -3,6 +3,7 @@ import { catchAsyncError } from "./catchAsyncError";
 import ErrorHandler from "../utils/ErrorHandler";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { redis } from "../utils/redis";
+import userModel from "../models/user.model";
 
 export const isAuthenticated = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -22,13 +23,14 @@ export const isAuthenticated = catchAsyncError(
     if (!decoded) {
       return next(new ErrorHandler("Invalid Access, Try again later.", 400));
     }
-
-    const user = await redis.get(decoded.id);
+    // const user = await redis.get(decoded.id);
+    const user = await userModel.findById(decoded?.id)
     if (!user) {
       return next(new ErrorHandler("User not found!", 400));
     }
 
-    req.user = JSON.parse(user);
+    // req.user = JSON.parse(user);
+    req.user = user
     next();
   }
 );

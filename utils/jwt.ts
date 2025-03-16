@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { IUser } from "../models/user.model";
 import { Response } from "express";
-import { redis } from "./redis";
+// import { redis } from "./redis";
 dotenv.config();
 
 interface ITokenOptions {
@@ -22,7 +22,7 @@ const refreshTokenExpire = parseInt(
 );
 
 export const accessTokenOptions: ITokenOptions = {
-  expires: new Date(Date.now() + accessTokenExpire * 60 * 60 * 1000),
+  expires: new Date(Date.now() + accessTokenExpire * 24 * 60 * 60 * 1000),
   maxAge: accessTokenExpire * 60 * 60 * 1000,
   httpOnly: true,
   sameSite: "none",
@@ -41,7 +41,7 @@ export const sendToken = (user: IUser, statusCode: number, res: Response) => {
   const accessToken = user.SignAccessToken();
   const refreshToken = user.SignRefreshToken();
   //setting token to redis
-  redis.set(user._id as any, JSON.stringify(user) as any);
+  // redis.set(user?._id as any, JSON.stringify(user) as any);
 
   res.cookie("access_token", accessToken, accessTokenOptions);
   res.cookie("refresh_token", refreshToken, refreshTokenOptions);

@@ -3,12 +3,12 @@ import http from "http";
 
 export const initSocketServer = (server: http.Server) => {
   const io = new SocketIOServer(
-    server
-    //      {
-    //     cors: {
-    //         origin: '*',
-    //     },
-    // }
+    server,
+   {
+        cors: {
+            origin: '*',
+        },
+    }
   );
 
   io.on("connection", (socket) => {
