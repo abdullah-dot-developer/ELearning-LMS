@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -16,7 +15,7 @@ const userSchema = new mongoose_1.default.Schema({
     },
     email: {
         type: String,
-        required: [true, "Please Enter Your Name."],
+        required: [true, "Please Enter Your Email."],
         validate: {
             validator: function (value) {
                 return emailRegexPattern.test(value);
@@ -51,17 +50,13 @@ const userSchema = new mongoose_1.default.Schema({
 }, {
     timestamps: true,
 });
-userSchema.pre("save", async function (next) {
-    if (this.isModified("password")) {
-        next();
-    }
-    this.password = await bcryptjs_1.default.hash(this.password, 10);
-    next();
-});
-//compare Password
-userSchema.methods.comparePassword = async function (enteredPassword) {
-    return await bcryptjs_1.default.compare(enteredPassword, this.password);
-};
+// userSchema.pre<IUser>("save", async function (next) {
+//   if (this.isModified("password")) {
+//     next();
+//   }
+//   this.password = await bcrypt.hash(this.password, 10);
+//   next();
+// });
 //access token
 userSchema.methods.SignAccessToken = function () {
     return jsonwebtoken_1.default.sign({ id: this._id }, process.env.ACCESS_TOKEN || "", {

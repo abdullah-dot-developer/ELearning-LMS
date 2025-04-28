@@ -170,7 +170,7 @@ export const loginUser = catchAsyncError(
       }
 
       const user = await userModel.findOne({ email });
-      
+
       if (!user) {
         return next(
           new ErrorHandler("User with this email doesn't exist!", 400)
@@ -223,7 +223,7 @@ export const updateAccessToken = catchAsyncError(
       // Extract refresh token from cookies
       const refreshToken = req.cookies.refresh_token as string;
       if (!refreshToken) {
-        return next(new ErrorHandler("Refresh token is missing.", 400));
+        return next(new ErrorHandler("Refresh token is missing!", 400));
       }
 
       // Verify refresh token
@@ -238,7 +238,9 @@ export const updateAccessToken = catchAsyncError(
 
       // Retrieve session data from Redis (or any session store)
       // const sessionData = await redis.get(decoded.id as string);
-      const sessionData = await userModel.findById(decoded?.id).select("-password");
+      const sessionData = await userModel
+        .findById(decoded?.id)
+        .select("-password");
       if (!sessionData) {
         return next(new ErrorHandler("No session found. Please log in.", 401));
       }
@@ -329,7 +331,7 @@ export const updateUserInfo = catchAsyncError(
       const { name } = req.body as IUpdateUserInfo;
       const userId = req.user?._id as string;
       const user = await userModel.findById(userId).select("-password");
-      
+
       if (user && name) {
         user.name = name;
         await user.save().catch((err) => console.error(err));
@@ -411,7 +413,6 @@ export const updateProfilePicture = catchAsyncError(
         return next(new ErrorHandler("User not found", 400));
       }
 
-
       // Check if user already has a profile picture
       if (user.avatar && user.avatar.public_id) {
         // Delete old profile picture from Cloudinary
@@ -431,7 +432,7 @@ export const updateProfilePicture = catchAsyncError(
         url: myCloud.secure_url,
       };
 
-      console.log(user?.avatar, 'avatar')
+      console.log(user?.avatar, "avatar");
       // Save the updated user information
       await user.save();
 

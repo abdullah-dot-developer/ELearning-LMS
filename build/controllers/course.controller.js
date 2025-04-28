@@ -98,18 +98,19 @@ exports.getSingleCourse = (0, catchAsyncError_1.catchAsyncError)(async (req, res
         // Extract course ID from request parameters
         const courseId = req.params.id;
         //   Check if course data exists in Redis cache
-        const cachedCourse = await redis_1.redis.get(courseId);
-        if (cachedCourse) {
-            // If cache exists, send it from Redis
-            return res.status(200).json({
-                success: true,
-                course: JSON.parse(cachedCourse),
-            });
-        }
+        // const cachedCourse = await redis.get(courseId);
+        // const course = await Course.findById(courseId);
+        // if (course) {
+        //   // If cache exists, send it from Redis
+        //   return res.status(200).json({
+        //     success: true,
+        //     course,
+        //   });
+        // }
         // Fetch course data from MongoDB if not cached
         const course = await course_model_1.default.findById(courseId).select("-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links");
         // Cache the result in Redis for future requests
-        await redis_1.redis.set(courseId, JSON.stringify(course), "EX", 604800);
+        // await redis.set(courseId, JSON.stringify(course), "EX", 604800);
         // Send the course data without sensitive fields
         return res.status(200).json({
             success: true,

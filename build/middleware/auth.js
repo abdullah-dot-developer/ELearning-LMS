@@ -7,7 +7,7 @@ exports.authorizeRoles = exports.isAuthenticated = void 0;
 const catchAsyncError_1 = require("./catchAsyncError");
 const ErrorHandler_1 = __importDefault(require("../utils/ErrorHandler"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const redis_1 = require("../utils/redis");
+const user_model_1 = __importDefault(require("../models/user.model"));
 exports.isAuthenticated = (0, catchAsyncError_1.catchAsyncError)(async (req, res, next) => {
     const access_token = req.cookies.access_token;
     if (!access_token) {
@@ -18,11 +18,13 @@ exports.isAuthenticated = (0, catchAsyncError_1.catchAsyncError)(async (req, res
     if (!decoded) {
         return next(new ErrorHandler_1.default("Invalid Access, Try again later.", 400));
     }
-    const user = await redis_1.redis.get(decoded.id);
+    // const user = await redis.get(decoded.id);
+    const user = await user_model_1.default.findById(decoded?.id);
     if (!user) {
         return next(new ErrorHandler_1.default("User not found!", 400));
     }
-    req.user = JSON.parse(user);
+    // req.user = JSON.parse(user);
+    req.user = user;
     next();
 });
 //authorizing roles
